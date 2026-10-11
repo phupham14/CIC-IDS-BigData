@@ -1,0 +1,110 @@
+# Hướng dẫn Cài đặt & Chạy Pipeline (Local Environment)
+
+Tài liệu này tổng hợp toàn bộ các bước và câu lệnh (Command Line) để cài đặt, thiết lập cấu trúc lưu trữ HDFS và chạy Hive Data Warehouse cho tập dữ liệu CIC-IDS2017 trên máy tính cá nhân.
+
+## Yêu cầu hệ thống (Prerequisites)
+- Đã cài đặt **Python 3.x**
+- Đã cài đặt **Docker** và **Docker Compose**
+- File dữ liệu gốc `.csv` của CIC-IDS2017 nằm ở thư mục ngoài cùng (cùng cấp với thư mục `project`).
+
+---
+
+## BƯỚC 1: Tiền xử lý & Làm sạch dữ liệu (Data Cleaning)
+
+1. Mở PowerShell / Terminal, di chuyển vào thư mục data:
+   ```powershell
+   cd project/data
+   ```
+2. Cài đặt thư viện Python:
+   ```powershell
+   pip install pandas numpy
+   ```
+3. Chạy script làm sạch:
+   ```powershell
+   python data_cleaning.py
+   ```
+   *➔ Dữ liệu sạch sẽ được xuất ra thư mục `project/data/cleaned_data`.*
+
+---
+
+## BƯỚC 2: Khởi động cụm HDFS & Hive (Docker)
+Sử dụng Docker Compose để bật cụm Hadoop (NameNode, DataNode, YARN) và Hive (Server, Metastore, Postgres).
+
+1. Di chuyển vào thư mục hdfs:
+   ```powershell
+   cd ../hdfs
+   ```
+2. Khởi động toàn bộ các container ngầm:
+   ```powershell
+   docker-compose up -d
+   ```
+   *➔ Đợi khoảng 1-2 phút. Bạn có thể kiểm tra NameNode UI tại `http://localhost:9870` và ResourceManager UI tại `http://localhost:8088`.*
+
+---
+
+## BƯỚC 3: Đồng bộ File và Thiết lập HDFS
+Copy dữ liệu sạch từ Windows vào bên trong container NameNode và đẩy lên hệ thống phân tán HDFS.
+
+1. Đứng ở Terminal, copy dữ liệu vào NameNode:
+   ```powershell
+   docker cp ../data/cleaned_data namenode:/cleaned_data
+   docker cp hdfs_setup.sh namenode:/hdfs_setup.sh
+   ```
+2. Vào bên trong container NameNode:
+   ```powershell
+   docker exec -it namenode bash
+   ```
+3. Chạy script tạo thư mục HDFS và nạp dữ liệu (bên trong container):
+   ```bash
+   chmod +x /hdfs_setup.sh
+   ./hdfs_setup.sh
+   
+   # Đẩy dữ liệu lên HDFS
+   hdfs dfs -put /cleaned_data/* /cic-ids2017/cleaned/
+   
+   # Thoát khỏi container NameNode
+   exit
+   ```
+
+---
+
+## BƯỚC 4: Chạy Hive Data Warehouse & Partitioning
+Tạo schema, nạp dữ liệu và partition.
+
+1. Đứng ở Terminal, copy file SQL vào container Hive:
+   ```powershell
+   docker cp ../hive/create_tables.hql hive-server:/create_tables.hql
+   docker cp ../hive/queries.hql hive-server:/queries.hql
+   ```
+2. Vào bên trong container Hive Server:
+   ```powershell
+   docker exec -it hive-server bash
+   ```
+3. Mở giao diện dòng lệnh của Hive:
+   ```bash
+   hive
+   ```
+4. Thực thi file tạo bảng và tự động nạp dữ liệu phân mảnh (Khoảng 2-3 phút):
+   ```sql
+   source /create_tables.hql;
+   ```
+---
+
+## BƯỚC 5: Kiểm tra kết quả
+1. Kiểm tra danh sách các Partition đã tạo thành công:
+   ```sql
+   SHOW PARTITIONS network_traffic_partitioned;
+   ```
+2. Chạy thử một truy vấn thống kê (Có loại bỏ nhiễu thời gian âm):
+   ```sql
+   SELECT attack_type, COUNT(*) 
+   FROM network_traffic_partitioned 
+   WHERE flow_duration >= 0 
+   GROUP BY attack_type;
+   ```
+3. Xem thư mục vật lý HDFS đã được phân mảnh trên NameNode Web UI:
+   Truy cập `http://localhost:9870` ➔ Utilities ➔ Browse the file system ➔ Nhập `/user/hive/warehouse/cic_ids2017.db/network_traffic_partitioned/`
+
+---
+**Dọn dẹp hệ thống:** Khi không sử dụng, đứng ở thư mục `project/hdfs` trên máy thật và chạy `docker-compose down` để tắt các container.
+# CIC-IDS-BigData
