@@ -1,0 +1,23 @@
+# Environment files & secrets
+.env
+.env.*
+*.env
+!*.env.example
+
+# Datasets
+*.csv
+data/raw_data/
+data/cleaned_data/
+
+# Temporary & editor files
+*~
+*.swp
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
