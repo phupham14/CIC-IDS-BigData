@@ -1,0 +1,27 @@
+label,rnk,destination_port,service,flows,pct_of_label
+Bot,1,8080,http-alt,1247,64.01
+Bot,2,3610,unknown,1,0.05
+Bot,3,52737,unknown,1,0.05
+Bot,4,52713,unknown,1,0.05
+Bot,5,53344,unknown,1,0.05
+DDoS,1,80,http,128011,100.00
+DDoS,2,27636,unknown,1,0.00
+DDoS,3,64869,unknown,1,0.00
+DDoS,4,64873,unknown,1,0.00
+DoS GoldenEye,1,80,http,10286,100.00
+DoS Hulk,1,80,http,172846,100.00
+DoS Slowhttptest,1,80,http,5228,100.00
+DoS slowloris,1,80,http,5385,100.00
+FTP-Patator,1,21,ftp,5930,99.98
+FTP-Patator,2,80,http,1,0.02
+Heartbleed,1,444,snpp/heartbleed-lab,11,100.00
+Infiltration,1,444,snpp/heartbleed-lab,36,100.00
+PortScan,1,80,http,372,0.41
+PortScan,2,21,ftp,243,0.27
+PortScan,3,22,ssh,243,0.27
+PortScan,4,139,netbios-ssn,196,0.22
+PortScan,5,445,smb,179,0.20
+SSH-Patator,1,22,ssh,3219,100.00
+Web Attack-Brute Force,1,80,http,1470,100.00
+Web Attack-Sql Injection,1,80,http,21,100.00
+Web Attack-XSS,1,80,http,652,100.00

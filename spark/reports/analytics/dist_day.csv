@@ -1,0 +1,6 @@
+day,total_flows,attack_flows,attack_pct,attack_types
+monday,502356,0,0.0,0
+tuesday,410241,9150,2.23,2
+wednesday,602569,193756,32.15,5
+thursday,399387,2179,0.55,4
+friday,606138,220656,36.4,3

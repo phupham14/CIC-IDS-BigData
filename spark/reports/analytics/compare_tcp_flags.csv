@@ -1,0 +1,16 @@
+label,attack_category,flows,avg_syn,avg_ack,avg_fin,avg_rst,avg_psh,avg_urg,avg_init_win_fwd
+BENIGN,normal,2094950,0.0566,0.2902,0.0105,0.0003,0.2679,0.121,7284.0
+DoS Hulk,dos,172846,0.0,0.5761,0.3408,0.0,0.0844,0.0009,2613.5
+DDoS,ddos,128014,0.0,0.5468,0.0002,0.0,0.4545,0.0,3890.3
+PortScan,portscan,90694,0.0,0.0007,0.0,0.0,0.9993,0.0,15206.8
+DoS GoldenEye,dos,10286,0.0,0.2862,0.0,0.0,0.7161,0.0071,21014.9
+FTP-Patator,brute_force,5931,0.3274,0.33,0.0,0.0,0.67,0.001,19640.7
+DoS slowloris,dos,5385,0.2654,0.2813,0.0,0.0,0.7187,0.0282,21037.8
+DoS Slowhttptest,dos,5228,0.1314,0.1936,0.0,0.0,0.8064,0.1234,23592.1
+SSH-Patator,brute_force,3219,0.0043,0.0746,0.0,0.0,0.9254,0.0674,27042.0
+Bot,botnet,1948,0.0,0.3696,0.0,0.0,0.6304,0.3609,5370.7
+Web Attack-Brute Force,web_attack,1470,0.0,0.0721,0.0,0.0,0.9279,0.0721,27149.3
+Web Attack-XSS,web_attack,652,0.0,0.0353,0.0,0.0,0.9647,0.0092,28210.5
+Infiltration,infiltration,36,0.5556,0.8333,0.0,0.0,0.1667,0.0278,2111.2
+Web Attack-Sql Injection,web_attack,21,0.0,0.4286,0.0,0.0,0.5714,0.4286,16797.9
+Heartbleed,heartbleed,11,0.0,0.9091,0.0,0.0,0.0909,0.0,2899.3

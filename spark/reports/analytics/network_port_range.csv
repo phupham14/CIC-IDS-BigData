@@ -1,0 +1,17 @@
+attack_category,port_range,flows,pct
+botnet,dynamic,455,23.36
+botnet,registered,1493,76.64
+brute_force,well_known,9150,100.00
+ddos,dynamic,2,0.00
+ddos,registered,1,0.00
+ddos,well_known,128011,100.00
+dos,well_known,193745,100.00
+heartbleed,well_known,11,100.00
+infiltration,well_known,36,100.00
+normal,dynamic,297276,14.19
+normal,registered,171318,8.18
+normal,well_known,1626356,77.63
+portscan,dynamic,4900,5.40
+portscan,registered,70918,78.19
+portscan,well_known,14876,16.40
+web_attack,well_known,2143,100.00

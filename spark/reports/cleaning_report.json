@@ -1,0 +1,54 @@
+{
+  "steps": [
+    {
+      "step": "raw",
+      "rows": 2830743,
+      "removed": 0
+    },
+    {
+      "step": "drop_null_inf",
+      "rows": 2827876,
+      "removed": 2867
+    },
+    {
+      "step": "drop_negative",
+      "rows": 2827761,
+      "removed": 115
+    },
+    {
+      "step": "drop_duplicates",
+      "rows": 2520691,
+      "removed": 307070
+    }
+  ],
+  "label_counts": {
+    "BENIGN": 2094950,
+    "DoS Hulk": 172846,
+    "DDoS": 128014,
+    "PortScan": 90694,
+    "DoS GoldenEye": 10286,
+    "FTP-Patator": 5931,
+    "DoS slowloris": 5385,
+    "DoS Slowhttptest": 5228,
+    "SSH-Patator": 3219,
+    "Bot": 1948,
+    "Web Attack-Brute Force": 1470,
+    "Web Attack-XSS": 652,
+    "Infiltration": 36,
+    "Web Attack-Sql Injection": 21,
+    "Heartbleed": 11
+  },
+  "category_counts": {
+    "normal": 2094950,
+    "dos": 193745,
+    "ddos": 128014,
+    "portscan": 90694,
+    "brute_force": 9150,
+    "web_attack": 2143,
+    "botnet": 1948,
+    "infiltration": 36,
+    "heartbleed": 11
+  },
+  "unknown_labels": [],
+  "elapsed_seconds": 231.0
+}
