@@ -1,0 +1,10 @@
+attack_category,description,severity,flows,pct,normal_to_class_ratio
+normal,Lưu lượng bình thường,0,2094950,83.1101,1.0
+dos,"Denial of Service từ một nguồn (Hulk, GoldenEye, slowloris, Slowhttptest)",4,193745,7.6862,10.8
+ddos,Distributed Denial of Service (LOIC),5,128014,5.0785,16.4
+portscan,Quét cổng dịch vụ (nmap),2,90694,3.5980,23.1
+brute_force,Dò mật khẩu FTP/SSH (Patator),3,9150,0.3630,229.0
+web_attack,"Tấn công ứng dụng web (Brute Force, XSS, SQL Injection)",4,2143,0.0850,977.6
+botnet,Máy bị nhiễm botnet (Ares),4,1948,0.0773,1075.4
+infiltration,Xâm nhập mạng nội bộ,5,36,0.0014,58193.1
+heartbleed,Khai thác lỗ hổng OpenSSL Heartbleed,5,11,0.0004,190450.0

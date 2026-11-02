@@ -1,0 +1,62 @@
+{
+  "dist_label": {
+    "seconds": 19.33,
+    "rows": 15
+  },
+  "dist_category": {
+    "seconds": 9.13,
+    "rows": 9
+  },
+  "dist_day": {
+    "seconds": 4.57,
+    "rows": 5
+  },
+  "temporal_bucket_overview": {
+    "seconds": 8.58,
+    "rows": 800
+  },
+  "temporal_bucket_category": {
+    "seconds": 4.01,
+    "rows": 421
+  },
+  "temporal_label_timeline": {
+    "seconds": 5.47,
+    "rows": 14
+  },
+  "temporal_hourly": {
+    "seconds": 4.3,
+    "rows": 38
+  },
+  "network_top_ports": {
+    "seconds": 5.25,
+    "rows": 20
+  },
+  "network_ports_per_attack": {
+    "seconds": 3.22,
+    "rows": 26
+  },
+  "network_port_range": {
+    "seconds": 2.4,
+    "rows": 16
+  },
+  "network_port_diversity": {
+    "seconds": 4.49,
+    "rows": 15
+  },
+  "network_service_group": {
+    "seconds": 2.18,
+    "rows": 30
+  },
+  "compare_label_profile": {
+    "seconds": 5.5,
+    "rows": 15
+  },
+  "compare_vs_benign": {
+    "seconds": 4.68,
+    "rows": 14
+  },
+  "compare_tcp_flags": {
+    "seconds": 2.13,
+    "rows": 15
+  }
+}

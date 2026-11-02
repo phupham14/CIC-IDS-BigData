@@ -1,0 +1,16 @@
+label,attack_category,flows,pct
+BENIGN,normal,2094950,83.1101
+DoS Hulk,dos,172846,6.8571
+DDoS,ddos,128014,5.0785
+PortScan,portscan,90694,3.5980
+DoS GoldenEye,dos,10286,0.4081
+FTP-Patator,brute_force,5931,0.2353
+DoS slowloris,dos,5385,0.2136
+DoS Slowhttptest,dos,5228,0.2074
+SSH-Patator,brute_force,3219,0.1277
+Bot,botnet,1948,0.0773
+Web Attack-Brute Force,web_attack,1470,0.0583
+Web Attack-XSS,web_attack,652,0.0259
+Infiltration,infiltration,36,0.0014
+Web Attack-Sql Injection,web_attack,21,0.0008
+Heartbleed,heartbleed,11,0.0004

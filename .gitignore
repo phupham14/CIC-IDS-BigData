@@ -7,6 +7,14 @@
 *.csv
 data/raw_data/
 data/cleaned_data/
+# Kết quả analytics (nhỏ) được commit để visualization dùng trực tiếp
+!spark/reports/analytics/*.csv
+
+# Generated logs
+spark/reports/*.log
+
+# Documents (không commit)
+*.docx
 
 # Temporary & editor files
 *~

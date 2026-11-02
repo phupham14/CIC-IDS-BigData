@@ -1,0 +1,16 @@
+label,flows,distinct_ports,port_entropy_bits,top_port_share
+PortScan,90694,1000,9.952,0.0041
+BENIGN,2094950,53788,5.426,0.4185
+Bot,1948,702,4.344,0.6401
+FTP-Patator,5931,2,0.002,0.9998
+DoS GoldenEye,10286,1,0.0,1.0
+Heartbleed,11,1,0.0,1.0
+Infiltration,36,1,0.0,1.0
+Web Attack-Sql Injection,21,1,0.0,1.0
+DoS Slowhttptest,5228,1,0.0,1.0
+SSH-Patator,3219,1,0.0,1.0
+Web Attack-Brute Force,1470,1,0.0,1.0
+DoS Hulk,172846,1,0.0,1.0
+Web Attack-XSS,652,1,0.0,1.0
+DDoS,128014,4,0.0,1.0
+DoS slowloris,5385,1,0.0,1.0
