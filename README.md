@@ -106,6 +106,7 @@ Mọi bước đều **idempotent** – chạy lại không làm trùng dữ li�
 | Service | URL |
 |---|---|
 | HDFS NameNode | http://localhost:9870 |
+| YARN ResourceManager (job MapReduce của Hive) | http://localhost:8088 |
 | Spark Master (xem worker, application) | http://localhost:8080 |
 | Spark Worker 1 / 2 | http://localhost:8081 · http://localhost:8082 |
 | Spark job đang chạy | http://localhost:4040 |
@@ -149,6 +150,8 @@ Database `cic_ids2017`:
 | `dim_attack_category` | `transform.py` | Mô tả + mức độ nghiêm trọng của nhóm tấn công |
 
 Các bảng đọc được từ **cả Hive lẫn Spark SQL** (dùng chung Hive metastore).
+
+**Execution engine:** Hive chạy MapReduce trên **YARN** (`mapreduce.framework.name=yarn` trong `hadoop.env`), mỗi truy vấn là một application trên ResourceManager. Spark dùng **Spark Standalone** cluster manager (1 master + 2 worker), không chạy qua YARN.
 
 ---
 
@@ -246,6 +249,8 @@ docker exec jupyter spark-submit /opt/project/spark/analytics.py
 | `Not a file: hdfs://.../cleaned/cleaned_data` | `docker cp` lần 2 tạo thư mục lồng → xóa `/cic-ids2017/cleaned/*` và upload lại chỉ `*.csv` (bước 3) |
 | `bash: $'\r': command not found` | File `.sh` bị CRLF → `sed -i 's/\r$//' <file>` (đã có `.gitattributes` để giữ LF) |
 | `Path does not exist: hdfs://...` sau khi khởi động lại | Volume Docker đã bị xóa (`down -v`) → chạy lại `./run_pipeline.sh` |
+| Hive job lỗi `Error: Java heap space` | Heap của task map/reduce quá nhỏ → kiểm tra `MAPRED_CONF_mapreduce_*_java_opts` trong `hadoop.env`, rồi `docker compose up -d` để tạo lại container |
+| Log Hive có `job_local...` thay vì `Tracking URL = http://resourcemanager:8088/...` | Hive đang chạy local, chưa lên YARN → thiếu `MAPRED_CONF_mapreduce_framework_name=yarn` |
 | Container restart liên tục | `docker logs <container>`; thường do thiếu RAM hoặc sai `hadoop.env` |
 | Git Bash đổi `/opt/...` thành `C:/Program Files/Git/opt/...` | Chạy `export MSYS_NO_PATHCONV=1` trước lệnh `docker exec` |
 
