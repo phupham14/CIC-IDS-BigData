@@ -129,8 +129,11 @@ services:
       - "4040:4040"
     volumes:
       - ..:/opt/project
+      # Dữ liệu benchmark cho pandas: đọc từ volume Linux, không qua bind mount Windows (chậm)
+      - bench_local:/bench_local
 
 volumes:
+  bench_local:
   hadoop_namenode:
   hadoop_datanode:
   hive_metastore_postgresql:

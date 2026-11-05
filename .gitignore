@@ -9,9 +9,11 @@ data/raw_data/
 data/cleaned_data/
 # Kết quả analytics (nhỏ) được commit để visualization dùng trực tiếp
 !spark/reports/analytics/*.csv
+!benchmark/results/*.csv
 
 # Generated logs
 spark/reports/*.log
+benchmark/results/*.log
 
 # Documents (không commit)
 *.docx

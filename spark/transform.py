@@ -107,7 +107,9 @@ df.write.mode("overwrite").partitionBy("attack_category").parquet(FLOWS_PARQUET_
 report["write_seconds_parquet"] = round(time.time() - t, 1)
 
 t = time.time()
-df.write.mode("overwrite").partitionBy("attack_category").option("header", True).csv(FLOWS_CSV_DIR)
+# Không ghi header: Spark đọc Hive text table KHÔNG tôn trọng skip.header.line.count
+# -> dòng header bị đọc thành dữ liệu. Schema đã nằm trong định nghĩa Hive table.
+df.write.mode("overwrite").partitionBy("attack_category").option("header", False).csv(FLOWS_CSV_DIR)
 report["write_seconds_csv"] = round(time.time() - t, 1)
 
 port_service_df(spark).write.mode("overwrite").parquet(DIM_PORT_SERVICE_DIR)
@@ -138,7 +140,6 @@ PARTITIONED BY (attack_category STRING)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
 LOCATION '{FLOWS_CSV_DIR}'
-TBLPROPERTIES ("skip.header.line.count"="1")
 """)
 for table in ("flows", "flows_csv"):
     spark.sql(f"MSCK REPAIR TABLE {HIVE_DB}.{table}")
