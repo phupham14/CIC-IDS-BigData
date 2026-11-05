@@ -21,9 +21,9 @@
     "infiltration": 36,
     "heartbleed": 11
   },
-  "write_seconds_parquet": 50.5,
-  "write_seconds_csv": 31.0,
-  "size_mb_parquet": 351.3,
+  "write_seconds_parquet": 63.2,
+  "write_seconds_csv": 34.8,
+  "size_mb_parquet": 349.2,
   "size_mb_csv": 1243.2,
   "columns": [
     "destination_port:int",
@@ -117,5 +117,5 @@
     "fwd_bytes_share:double",
     "has_response:int"
   ],
-  "elapsed_seconds": 210.1
+  "elapsed_seconds": 213.9
 }

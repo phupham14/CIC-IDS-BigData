@@ -40,18 +40,26 @@ CIC-IDS-BigData/
 ├── hive/
 │   ├── create_tables.hql      # Bảng raw (external) + bảng partition theo attack_type
 │   └── queries.hql            # Các truy vấn phân tích HiveQL
-└── spark/
-    ├── Dockerfile             # Image chung cho spark-master / worker / jupyter
-    ├── conf/spark-defaults.conf
-    ├── config.py              # SparkSession + hằng số đường dẫn HDFS
-    ├── schema.py              # Schema 79 cột + map label -> attack_category
-    ├── dimensions.py          # Bảng dimension (port -> service, attack category)
-    ├── ingest_raw.py          # Upload CSV gốc lên HDFS /raw/<day>/
-    ├── cleaning.py            # Cleaning bằng PySpark
-    ├── transform.py           # Feature engineering, ghi Parquet/CSV, đăng ký Hive tables
-    ├── analytics.py           # 15 truy vấn Spark SQL
-    ├── smoke_test.py          # Kiểm tra Spark đọc được HDFS + Hive
-    └── reports/               # (sinh ra) report JSON + kết quả analytics dạng CSV
+├── spark/
+│   ├── Dockerfile             # Image chung cho spark-master / worker / jupyter
+│   ├── conf/spark-defaults.conf
+│   ├── config.py              # SparkSession + hằng số đường dẫn HDFS
+│   ├── schema.py              # Schema 79 cột + map label -> attack_category
+│   ├── dimensions.py          # Bảng dimension (port -> service, attack category)
+│   ├── ingest_raw.py          # Upload CSV gốc lên HDFS /raw/<day>/
+│   ├── cleaning.py            # Cleaning bằng PySpark
+│   ├── transform.py           # Feature engineering, ghi Parquet/CSV, đăng ký Hive tables
+│   ├── analytics.py           # 15 truy vấn Spark SQL
+│   ├── smoke_test.py          # Kiểm tra Spark đọc được HDFS + Hive
+│   └── reports/               # (sinh ra) report JSON + kết quả analytics dạng CSV
+└── benchmark/
+    ├── run_benchmark.sh       # Chạy toàn bộ benchmark
+    ├── prepare_samples.py     # Tạo dữ liệu 10%..400%
+    ├── tasks.py               # Tác vụ B1 cài đặt bằng pandas và PySpark
+    ├── bench_*.py             # B1-B4
+    ├── sql_queries.py         # Bộ truy vấn chung cho Hive và Spark SQL
+    ├── summarize.py           # Gộp kết quả -> benchmark_summary.csv
+    └── results/               # (sinh ra) kết quả đo
 ```
 
 ## Yêu cầu & chuẩn bị dữ liệu
@@ -175,7 +183,7 @@ Các bảng đọc được từ **cả Hive lẫn Spark SQL** (dùng chung Hive
 | Sau loại giá trị âm | 2,827,761 |
 | Sau loại duplicate | **2,520,691** |
 
-**Transform** (`transform.py`): loại 8 cột hằng số → feature thời gian giả lập (`time_bucket`, `pseudo_hour`, `pseudo_time`) → feature mạng (`port_range`, `service` qua JOIN dimension) → feature lưu lượng (`bytes_per_packet`, `fwd_bwd_packet_ratio`, `fwd_bytes_share`, `has_response`...) → ghi Parquet (352 MB) và CSV (1.2 GB) → đăng ký Hive tables.
+**Transform** (`transform.py`): loại 8 cột hằng số → feature thời gian giả lập (`time_bucket`, `pseudo_hour`, `pseudo_time`) → feature mạng (`port_range`, `service` qua JOIN dimension) → feature lưu lượng (`bytes_per_packet`, `fwd_bwd_packet_ratio`, `fwd_bytes_share`, `has_response`...) → ghi Parquet (~350 MB) và CSV không header (1.2 GB) → đăng ký Hive tables.
 
 **Analytics** (`analytics.py`) – 15 truy vấn, chạy riêng được: `spark-submit analytics.py <tên query> ...`
 
@@ -185,6 +193,41 @@ Các bảng đọc được từ **cả Hive lẫn Spark SQL** (dùng chung Hive
 | Thời gian | `temporal_bucket_overview`, `temporal_bucket_category`, `temporal_label_timeline`, `temporal_hourly` |
 | Mạng | `network_top_ports`, `network_ports_per_attack`, `network_port_range`, `network_port_diversity`, `network_service_group` |
 | So sánh | `compare_label_profile`, `compare_vs_benign`, `compare_tcp_flags` |
+
+---
+
+## Benchmark
+
+Chạy sau khi pipeline đã xong (cluster đang chạy), mất khoảng 2-3 giờ:
+
+```bash
+./benchmark/run_benchmark.sh                   # tất cả
+./benchmark/run_benchmark.sh --only sql_hive   # một bước: prepare | b1_pandas | b1_spark | b4 | sql_spark | sql_hive | summarize
+```
+
+| Benchmark | Nội dung | Script |
+|---|---|---|
+| **B1** Pandas vs PySpark | `read_count`, `cleaning`, `groupby_count`, `label_profile` trên 10/25/50/75/100/200/400% dữ liệu | `bench_pandas.py`, `bench_spark_tasks.py` |
+| **B2** CSV vs Parquet | 7 truy vấn trên `flows` (Parquet) và `flows_csv` (CSV), cả Hive và Spark | `bench_sql_spark.py`, `bench_sql_hive.py` |
+| **B3** Hive vs Spark SQL | Cùng 7 truy vấn (count, group by, filter, partition filter, join, window, wide agg) | `sql_queries.py` |
+| **B4** Scalability | `cleaning`, `label_profile` với 1 / 2 / 4 core trên 100% và 200% | `bench_spark_tasks.py --benchmark scalability` |
+
+**Phương pháp đo:**
+- Mỗi cấu hình chạy 1 lần warm-up (`run=0`, không tính) + 3 lần đo, báo cáo **median**. Không dùng `cache()`.
+- Dữ liệu 200% / 400% = nhân bản dataset gốc 2 / 4 lần (`prepare_samples.py`), cùng một file cho cả 2 engine.
+- pandas chạy trong container `jupyter` (cùng phần cứng với Spark), đọc từ docker volume `/bench_local`; **mỗi lần đo là 1 process riêng, giới hạn 10 GB RAM thật (RSS)** do process cha giám sát → vượt quá thì kill và ghi `oom`. (Không dùng `RLIMIT_AS` vì nó tính bộ nhớ ảo, khiến pandas bị báo hết RAM sớm dù RAM thật còn trống.)
+- Spark B1: 2 executor × 2 core × 2 GB. Spark B4: executor 1 core × 1 GB, giới hạn bằng `spark.cores.max`.
+- Hive: MapReduce on YARN, thời gian lấy từ `Time taken` của Hive (không tính khởi động CLI).
+- CPU/RAM của các container được ghi mỗi ~5 giây vào `results/docker_stats.csv` (resource utilization).
+
+**Kết quả** (`benchmark/results/`):
+
+| File | Nội dung |
+|---|---|
+| `benchmark_summary.csv` | **Dùng cho biểu đồ**: median/min/max theo cấu hình, peak memory, speedup/efficiency (B4) |
+| `benchmark_results.csv` | Tất cả các lần đo |
+| `samples.csv` | Số dòng và dung lượng từng mức dữ liệu |
+| `docker_stats.csv` | CPU/RAM theo thời gian, đối chiếu với cột `started_at` |
 
 ---
 
