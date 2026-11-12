@@ -29,6 +29,9 @@ CSV gốc ──► HDFS (/raw, /cleaned) ──┬──► Hive  (bảng raw +
 ```
 CIC-IDS-BigData/
 ├── run_pipeline.sh            # Dựng lại toàn bộ pipeline bằng 1 lệnh
+├── visualization/             # Module trực quan hóa dữ liệu
+│   ├── report.ipynb           # Jupyter Notebook phân tích
+│   └── figures/               # hình ảnh 
 ├── data/
 │   ├── data_cleaning.py       # Làm sạch cơ bản bằng pandas -> data/cleaned_data/
 │   ├── raw_data/              # (tự đặt) 8 file CSV gốc - không commit
